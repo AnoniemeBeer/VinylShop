@@ -22,6 +22,10 @@ Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
+Route::get('/playground', function () {
+    return view('playground');
+})->name('playground');
+
 // Route::view('/', 'home')->name('home');
 // Route::view('/contact', 'contact')->name('contact');
 
