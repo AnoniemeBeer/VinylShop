@@ -26,10 +26,12 @@ Route::get('/playground', function () {
     return view('playground');
 })->name('playground');
 
+
+
 // Route::view('/', 'home')->name('home');
 // Route::view('/contact', 'contact')->name('contact');
 
-Route::prefix('admin')->name('admin.')->group(function(){
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::redirect('/', '/admin/records');
     Route::get('records', [RecordController::class, 'index'])->name('records.index');
 });
