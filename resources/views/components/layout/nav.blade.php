@@ -8,7 +8,7 @@
         <a class="hidden sm:block font-medium text-lg" href="{{ route('home') }}">
             The Vinyl Shop
         </a>
-        <x-jet-nav-link href="{{ route('home') }}" :active="request()->routeIs('shop')">
+        <x-jet-nav-link href="{{ route('shop') }}" :active="request()->routeIs('shop')">
             Shop
         </x-jet-nav-link>
         <x-jet-nav-link href="{{ route('contact') }}" :active="request()->routeIs('contact')">

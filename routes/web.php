@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RecordController;
+use App\Http\Livewire\Shop;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,10 +27,7 @@ Route::get('/playground', function () {
     return view('playground');
 })->name('playground');
 
-
-
-// Route::view('/', 'home')->name('home');
-// Route::view('/contact', 'contact')->name('contact');
+Route::get('shop', Shop::class)->name('shop');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::redirect('/', '/admin/records');
