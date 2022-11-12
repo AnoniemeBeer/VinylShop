@@ -5,22 +5,22 @@
             {{ $loading }}
         </x-tmk.preloader>
     </div>
-    {{-- filter section: artist or title, genre, max price and records per page --}}
 
+    {{-- filter section: artist or title, genre, max price and records per page --}}
     <div class="grid grid-cols-10 gap-4">
         <div class="col-span-10 md:col-span-5 lg:col-span-3">
             <x-jet-label for="name" value="Filter" />
-            <div class="relative" x-data="{ name: @entangle('name') }">
-                <x-jet-input id="name" type="text" class="block mt-1 w-full" placeholder="Filter Artist Or Record"
-                    x-model.debounce.500ms="name" {{-- wire:model.debounce.500ms="name" --}} />
-                <div class="w-5 absolute right-4 top-3 cursor-pointer" x-show="name" @click="name = '';">
+            <div x-data="{ name: @entangle('name') }" class="relative">
+                <x-jet-input id="name" type="text" x-model.debounce.500ms="name" {{-- wire:model.debounce.500ms="name" --}}
+                    class="block mt-1 w-full" placeholder="Filter Artist Or Record" />
+                <div x-show="name" @click="name = '';" class="w-5 absolute right-4 top-3 cursor-pointer">
                     <x-phosphor-x-duotone />
                 </div>
             </div>
         </div>
         <div class="col-span-5 md:col-span-2 lg:col-span-2">
             <x-jet-label for="genre" value="Genre" />
-            <x-tmk.form.select id="genre" class="block mt-1 w-full" wire:model.debounce.500ms="price">
+            <x-tmk.form.select id="genre" wire:model="genre" class="block mt-1 w-full">
                 <option value="%">All Genres</option>
                 @foreach ($allGenres as $g)
                     <option value="{{ $g->id }}">
@@ -31,7 +31,7 @@
         </div>
         <div class="col-span-5 md:col-span-3 lg:col-span-2">
             <x-jet-label for="perPage" value="Records per page" />
-            <x-tmk.form.select id="perPage" class="block mt-1 w-full" wire:model="perPage">
+            <x-tmk.form.select id="perPage" wire:model="perPage" class="block mt-1 w-full">
                 @foreach ([3, 6, 9, 12, 15, 18, 24] as $recordsPerPage)
                     <option value="{{ $recordsPerPage }}">{{ $recordsPerPage }}</option>
                 @endforeach
@@ -41,9 +41,9 @@
             <x-jet-label for="price">Price &le;
                 <output id="pricefilter" name="pricefilter">{{ $price }}</output>
             </x-jet-label>
-            <x-jet-input type="range" id="price" name="price" min="{{ $priceMin }}"
-                max="{{ $priceMax }}" oninput="pricefilter.value = price.value"
-                class="block mt-4 w-full h-2 bg-indigo-100 appearance-none" wire:model="price" />
+            <x-jet-input type="range" id="price" name="price" wire:model.debounce.500ms="price"
+                min="{{ $priceMin }}" max="{{ $priceMax }}" oninput="pricefilter.value = price.value"
+                class="block mt-4 w-full h-2 bg-indigo-100 appearance-none" />
         </div>
     </div>
 
@@ -87,8 +87,11 @@
     {{-- No records found --}}
     @if ($records->isEmpty())
         <x-tmk.alert type="danger" class="w-full">
-            Can't find any artist or album with <b>'{{ $name }}'</b> and a price of
-            <b>'≤ €{{ $price }}'</b> for this genre
+            Can't find any artist or album with <b>'{{ $name }}'</b>
+            @if ($genre != '%')
+                for the genre <b>'{{ $allGenres->where('id', $genre)->first()->name }}'</b>
+            @endif and a price of <b>'≤
+                €{{ $price }}'</b> for this genre
         </x-tmk.alert>
     @endif
 

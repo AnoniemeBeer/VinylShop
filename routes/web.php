@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RecordController;
 use App\Http\Livewire\Shop;
+use App\Http\Livewire\Itunes;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,8 +29,9 @@ Route::get('/playground', function () {
 })->name('playground');
 
 Route::get('shop', Shop::class)->name('shop');
+Route::get('itunes', Itunes::class)->name('itunes');
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::redirect('/', '/admin/records');
     Route::get('records', [RecordController::class, 'index'])->name('records.index');
 });
@@ -37,7 +39,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-    'verified'
+    'verified',
+    'active'
 ])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');

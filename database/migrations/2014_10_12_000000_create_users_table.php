@@ -53,7 +53,16 @@ return new class extends Migration
                     'password' => Hash::make('user1234'),
                     'created_at' => now(),
                     'email_verified_at' => now()
+                ],
+                [
+                    'name' => 'disabled user',
+                    'email' => 'disuser@test.be',
+                    'admin' => true,
+                    'password' => Hash::make('testtest'),
+                    'created_at' => now(),
+                    'email_verified_at' => now()
                 ]
+
             ]
         );
 
@@ -66,6 +75,7 @@ return new class extends Migration
                     'name' => "ITF User $i",
                     'email' => "itf_user_$i@mailinator.com",
                     'password' => Hash::make("itfuser$i"),
+                    'admin' => false,
                     'active' => $active,
                     'created_at' => now(),
                     'email_verified_at' => now()
