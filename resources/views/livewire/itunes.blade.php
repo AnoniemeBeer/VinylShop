@@ -1,6 +1,6 @@
 <div>
     <div>
-        <h2>{{ $response['title'] }} - {{ $response['country'] }}</h2>
+        <h2>{{ $feed['title'] }} - {{ $feed['country'] }}</h2>
         <h3>Last updated: {{ $date }}</h3>
     </div>
     <div>

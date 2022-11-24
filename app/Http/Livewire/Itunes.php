@@ -13,11 +13,11 @@ class Itunes extends Component
         // dump data from https://rss.applemarketingtools.com/api/v2/be/music/most-played/10/albums.json
         $url = 'https://rss.applemarketingtools.com/api/v2/be/music/most-played/10/albums.json';
         $response = Http::get($url)->json();
-        $response = $response['feed'];
-        $albums = $response['results'];
-        $date = Carbon::parse($response['updated'])->format('F d Y');
+        $feed = $response['feed'];
+        $albums = $feed['results'];
+        $date = Carbon::parse($feed['updated'])->format('F d Y');
 
-        return view('livewire.itunes', compact('albums', 'response', 'date'))
+        return view('livewire.itunes', compact('albums', 'feed', 'date'))
             ->layout('layouts.vinylshop', [
                 'description' => 'Itunes',
                 'title' => 'Itunes',
