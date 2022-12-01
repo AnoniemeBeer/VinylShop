@@ -8,20 +8,47 @@ use Illuminate\Support\Carbon;
 
 class Itunes extends Component
 {
+    public $countryCode = 'be';
+    public $amount = 10;
+    public $type = true;
+    public $url = 'https://rss.applemarketingtools.com/api/v2/%s/music/most-played/%d/%s.json';
+    public $response;
+    public $albums;
+    public $date;
+    public $feed;
+
+    public $loading = 'Please wait...';
+
+    public function request()
+    {
+        $type = ($this->type) ? 'albums' : 'songs';
+        $this->response = Http::get(sprintf($this->url, $this->countryCode, $this->amount, $type))->json();
+        $this->feed = $this->response['feed'];
+        $this->albums = $this->feed['results'];
+        $this->date = Carbon::parse($this->feed['updated'])->format('F d Y');
+    }
+
+    public function updated($propertyName, &$propertyValue)
+    {
+        if (in_array($propertyName, ['countryCode', 'amount', 'type'])) {
+            $this->request();
+        }
+    }
+
     public function render()
     {
-        // dump data from https://rss.applemarketingtools.com/api/v2/be/music/most-played/10/albums.json
         $url = 'https://rss.applemarketingtools.com/api/v2/be/music/most-played/10/albums.json';
-        $response = Http::get($url)->json();
-        $feed = $response['feed'];
-        $albums = $feed['results'];
-        $date = Carbon::parse($feed['updated'])->format('F d Y');
+        $this->request();
 
-        return view('livewire.itunes', compact('albums', 'feed', 'date'))
+        $albums = $this->albums;
+        $feed = $this->feed;
+        $date = $this->date;
+
+        return view('livewire.itunes')
             ->layout('layouts.vinylshop', [
                 'description' => 'Itunes',
                 'title' => 'Itunes',
-                'albums' => $albums
+                'albums' => $this->albums
             ]);
     }
 }
