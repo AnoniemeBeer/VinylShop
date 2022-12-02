@@ -17,3 +17,5 @@ delegate('body', {
     animation: 'shift-toward-subtle',
     target: '[data-tippy-content]',
 });
+
+import './sweetAlert2';
