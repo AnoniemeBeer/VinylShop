@@ -93,7 +93,26 @@ class Record extends Model
         return $query->where('title', 'like', "%{$search}%")
             ->orWhere('artist', 'like', "%{$search}%");
     }
-
+    public function scopeCoverExists($query, $exists = true)
+    {
+        // make an array with all the mb_id attributes
+        $mb_ids = $query->pluck('mb_id');
+        // empty array to store 'mb_id's that have a cover
+        $covers = [];
+        foreach ($mb_ids as $mb_id) {
+            // $exists = true: if the cover exists, add the mb_id to the $covers array
+            // $exists = false: if the cover does not exist, add the mb_id to the $covers array
+            if ($exists) {
+                if (Storage::disk('public')->exists('covers/' . $mb_id . '.jpg'))
+                    $covers[] = $mb_id;
+            } else {
+                if (!Storage::disk('public')->exists('covers/' . $mb_id . '.jpg'))
+                    $covers[] = $mb_id;
+            }
+        }
+        // return only the records with the mb_id in the $covers array
+        return $query->whereIn('mb_id', $covers);
+    }
 
     /**
      * Add attributes that should be hidden to the $hidden array
