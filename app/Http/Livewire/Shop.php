@@ -53,20 +53,13 @@ class Shop extends Component
             ->where('genre_id', 'like', $this->genre)
             ->paginate($this->perPage);
 
-        // ->where([
-        //     ['title', 'like', "%{$this->name}%"],
-        //     ['genre_id', 'like', $this->genre],
-        //     ['price', '<=', $this->price]
-        // ])->orWhere([
-        //     ['artist', 'like', "%{$this->name}%"],
-        //     ['genre_id', 'like', $this->genre],
-        //     ['price', '<=', $this->price]
-        // ])
-
         return view('livewire.shop', compact('records', 'allGenres'))
-            ->layout('layouts.vinylshop', [
-                'description' => 'Shop',
-                'title' => 'Shop'
-            ]);
+            ->layout(
+                'layouts.vinylshop',
+                [
+                    'description' => 'Shop',
+                    'title' => 'Shop'
+                ]
+            );
     }
 }

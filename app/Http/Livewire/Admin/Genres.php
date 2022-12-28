@@ -18,11 +18,6 @@ class Genres extends Component
     use WithPagination;
     public $perPage = 10;
 
-    // validation attributes
-    // protected $validationAttributes = [
-    //     'editGenre.name' => 'genre name',
-    // ];
-
     protected $messages = [
         'newGenre.required' => 'Please enter a genre name.',
         'newGenre.min' => 'The new name must contains at least 3 characters and no more than 30 characters.',
@@ -83,7 +78,7 @@ class Genres extends Component
 
         // $this->validateOnly('editGenre.name');
         // $oldName = $genre->name;
-        // $newName = 
+        // $newName =
 
         $this->validateOnly('editGenre.name');
         $oldName = $genre->name;

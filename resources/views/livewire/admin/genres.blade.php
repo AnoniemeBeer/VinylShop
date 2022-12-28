@@ -124,18 +124,23 @@
                         @else
                             <td>
                                 <div class="flex flex-col text-left">
-                                    <x-jet-input id="edit_{{ $genre->id }}" type="text" x-data=""
-                                        x-init="$el.focus()" wire:model.defer="editGenre.name"
-                                        @keydown.enter="$el.setAttribute('disabled', true);"
-                                        @keydown.tab="$el.setAttribute('disabled', true);"
-                                        @keydown.esc="$el.setAttribute('disabled', true);"
-                                        wire:keydown.enter="updateGenre({{ $genre->id }})"
-                                        wire:keydown.tab="updateGenre({{ $genre->id }})"
-                                        wire:keydown.escape="resetEditGenre()" class="w-48" />
-                                    <x-phosphor-arrows-clockwise
-                                        class="w-5 h-5 text-gray-200 absolute top-3 right-2 animate-spin" wire:loading
-                                        wire:target="updateGenre" />
-                                    <x-jet-input-error for="editGenre.name" class="mt-2" />
+                                    <div class="relative w-64">
+                                        <x-jet-input id="edit_{{ $genre->id }}" type="text"
+                                            x-data="" x-init="$el.focus()"
+                                            wire:model.defer="editGenre.name"
+                                            @keydown.enter="$el.setAttribute('disabled', true);"
+                                            @keydown.tab="$el.setAttribute('disabled', true);"
+                                            @keydown.esc="$el.setAttribute('disabled', true);"
+                                            wire:keydown.enter="updateGenre({{ $genre->id }})"
+                                            wire:keydown.tab="updateGenre({{ $genre->id }})"
+                                            wire:keydown.escape="resetEditGenre()"
+                                            class="w-full shadow-md placeholder-gray-300" />
+                                        <x-phosphor-arrows-clockwise
+                                            class="w-5 h-5 text-gray-200 absolute top-3 right-2 animate-spin"
+                                            wire:loading wire:target="updateGenre" />
+                                        <x-jet-input-error for="editGenre.name"
+                                            class="w-5 h-5 text-gray-200 absolute top-3 right-2 animate-spin" />
+                                    </div>
                                 </div>
                             </td>
                         @endif

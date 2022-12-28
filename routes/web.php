@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\RecordController;
 use App\Http\Livewire\Shop;
 use App\Http\Livewire\Itunes;
 use App\Http\Livewire\admin\genres;
+use App\Http\Livewire\admin\records;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +36,8 @@ Route::get('itunes', Itunes::class)->name('itunes');
 Route::middleware(['auth', 'active', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::redirect('/', '/admin/records');
     Route::get('genres', Genres::class)->name('genres');
-    Route::get('records', [RecordController::class, 'index'])->name('records.index');
+    Route::get('records_old', [RecordController::class, 'index'])->name('records.old');
+    Route::get('records', Records::class)->name('records');
 });
 
 Route::middleware([
