@@ -1,11 +1,15 @@
 <div>
     <x-tmk.section class="mb-4 flex gap-2">
-        <div class="flex-1">
+        <div class="flex-1 relative" x-data="{ search: @entangle('search') }">
             <x-jet-input id="search" type="text" placeholder="Filter Artist Or Record"
-                wire:model.debounce.500ms="search" class="w-full shadow-md placeholder-gray-300" />
+                wire:model.debounce.500ms="search" class="w-full shadow-md placeholder-gray-300"
+                x-model.debounce.500ms="search" />
+            <div class="w-5 absolute right-4 top-3 cursor-pointer" x-show="search" @click="search = '';">
+                <x-phosphor-x-duotone />
+            </div>
         </div>
-        <x-tmk.form.switch id="noStock" text-off="No stock" color-off="bg-gray-100 before:line-through" text-on="No stock"
-            color-on="text-white bg-lime-600" wire:model="noStock" class="w-20 h-11" />
+        <x-tmk.form.switch id="noStock" text-off="No stock" color-off="bg-gray-100 before:line-through"
+            text-on="No stock" color-on="text-white bg-lime-600" wire:model="noStock" class="w-20 h-11" />
         <x-tmk.form.switch id="noCover" text-off="Records without cover" color-off="bg-gray-100 before:line-through"
             text-on="Records without cover" color-on="text-white bg-lime-600" wire:model="noCover" class="w-44 h-11" />
         <x-jet-button wire:click="setNewRecord()">
@@ -43,32 +47,36 @@
             </thead>
             <tbody>
                 @forelse($records as $record)
-                    <tr class="border-t border-gray-300" wire:key="record_{{ $record->id }}">
-                        <td>{{ $record->id }}</td>
-                        <td>
-                            <img src="{{ $record->cover['url'] }}" alt="{{ $record->title }} by {{ $record->artist }}"
-                                class="my-2 border object-cover">
-                        </td>
-                        <td>{{ $record->price_euro }}</td>
-                        <td>{{ $record->stock }}</td>
-                        <td class="text-left">
-                            <p class="text-lg font-medium">{{ $record->artist }}</p>
-                            <p class="italic">{{ $record->title }}</p>
-                            <p class="text-sm text-teal-700">{{ $record->genre_name }}</p>
-                        </td>
-                        <td>
-                            <div class="border border-gray-300 rounded-md overflow-hidden m-2 grid grid-cols-2 h-10">
-                                <button wire:click="setNewRecord({{ $record->id }})"
-                                    class="text-gray-400 hover:text-sky-100 hover:bg-sky-500 transition border-r border-gray-300">
-                                    <x-phosphor-pencil-line-duotone class="inline-block w-5 h-5" />
-                                </button>
-                                <button x-data=""
-                                    @click="confirm('Are you sure you want to delete this record?') ? $wire.deleteRecord({{ $record->id }}) : ''"
-                                    class="text-gray-400 hover:text-red-100 hover:bg-red-500 transition">
-                                    <x-phosphor-trash-duotone class="inline-block w-5 h-5" />
-                                </button>
-                            </div>
-                        </td>
+                    @if ($record->stock == 0)
+                        <tr class="border-t border-gray-300 bg-red-100" wire:key="record_{{ $record->id }}">
+                        @else
+                        <tr class="border-t border-gray-300" wire:key="record_{{ $record->id }}">
+                    @endif
+
+                    <td>{{ $record->id }}</td>
+                    <td>
+                        <img src="{{ $record->cover['url'] }}" alt="{{ $record->title }} by {{ $record->artist }}"
+                            class="my-2 border object-cover">
+                    </td>
+                    <td>{{ $record->price_euro }}</td>
+                    <td>{{ $record->stock }}</td>
+                    <td class="text-left">
+                        <p class="text-lg font-medium">{{ $record->artist }}</p>
+                        <p class="italic">{{ $record->title }}</p>
+                        <p class="text-sm text-teal-700">{{ $record->genre_name }}</p>
+                    </td>
+                    <td>
+                        <div class="border border-gray-300 rounded-md overflow-hidden m-2 grid grid-cols-2 h-10">
+                            <button wire:click="setNewRecord({{ $record->id }})"
+                                class="text-gray-400 hover:text-sky-100 hover:bg-sky-500 transition border-r border-gray-300">
+                                <x-phosphor-pencil-line-duotone class="inline-block w-5 h-5" />
+                            </button>
+                            <button x-data="" wire:click="setDeleteRecord({{ $record->id }})"
+                                class="text-gray-400 hover:text-red-100 hover:bg-red-500 transition">
+                                <x-phosphor-trash-duotone class="inline-block w-5 h-5" />
+                            </button>
+                        </div>
+                    </td>
                     </tr>
                 @empty
                     <tr>
@@ -147,4 +155,19 @@
 
         </x-slot>
     </x-jet-dialog-modal>
+
+    <x-jet-confirmation-modal id="deleteModal" wire:model="showDeleteModal">
+        <x-slot name="title">
+            <h2>Delete record</h2>
+        </x-slot>
+        <x-slot name="content">
+            <p>Are you sure you want to delete <b>{{ $newRecord['title'] }}</b> by <b>{{ $newRecord['artist'] }}</b>?
+            </p>
+        </x-slot>
+        <x-slot name="footer">
+            <x-jet-secondary-button @click="show = false">Cancel</x-jet-secondary-button>
+            <x-jet-danger-button class="ml-2" wire:click="deleteRecord({{ $newRecord['id'] }})">Delete record
+            </x-jet-danger-button>
+        </x-slot>
+    </x-jet-confirmation-modal>
 </div>

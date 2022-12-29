@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Livewire\WithPagination;
 use App\Models\Record;
 use App\Models\Genre;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -21,6 +22,7 @@ class Records extends Component
     public $perPage = 5;
     // show/hide the modal
     public $showModal = false;
+    public $showDeleteModal = false;
     // array that contains the values for a new or updated version of the record
     public $newRecord = [
         'id' => null,
@@ -149,10 +151,33 @@ class Records extends Component
         ]);
     }
 
+    public function setDeleteRecord(Record $record = null)
+    {
+        $this->resetErrorBag();
+        if ($record) {
+            $this->newRecord['id'] = $record->id;
+            $this->newRecord['artist'] = $record->artist;
+            $this->newRecord['title'] = $record->title;
+            $this->newRecord['mb_id'] = $record->mb_id;
+            $this->newRecord['stock'] = $record->stock;
+            $this->newRecord['price'] = $record->price;
+            $this->newRecord['genre_id'] = $record->genre_id;
+            $this->newRecord['cover'] =
+                Storage::disk('public')->exists('covers/' . $record->mb_id . '.jpg')
+                ? '/storage/covers/' . $record->mb_id . '.jpg'
+                : '/storage/covers/no-cover.png';
+        } else {
+            $this->reset('newRecord');
+        }
+        $this->showDeleteModal = true;
+    }
+
     // delete an existing record
     public function deleteRecord(Record $record)
     {
+        Storage::disk('public')->delete('covers/' . $record->mb_id . '.jpg');
         $record->delete();
+        $this->showDeleteModal = false;
         $this->dispatchBrowserEvent('swal:toast', [
             'background' => 'success',
             'html' => "The record <b><i>{$record->title} from {$record->artist}</i></b> has been deleted",
